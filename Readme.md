@@ -1,7 +1,7 @@
 
-# DeepKnowledge: Knowledge-Driven automated testing of Deep-Neural Networks
-
-
+# DeepKnowledge: 
+Testing Deep Neural Networks Using Generalisation-based
+Coverage Criterion
 
 This code is an implementation of our tool-supported technique DEEPKNOWLEDGE.
 
