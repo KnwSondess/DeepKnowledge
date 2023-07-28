@@ -1,29 +1,24 @@
 
 # DeepKnowledge: Knowledge-Driven automated testing of Deep-Neural Networks
-###### This is the SESAME Assurance tool-supported technique of Data-Driven and Learning Components of EDDIs
+
 
 
 This code is an implementation of our tool-supported technique DEEPKNOWLEDGE.
-It is in beta version and provided as a reference to the approach presented in deliverable 6.1. 
-If you encounter any problems, do not hesitate to reach out to the York team (sondess.missaoui@york.ac.uk).
+
 
 Scripts are tested with the open-source machine learning framework Keras (v2.2.2) with Tensorflow (v2.6) backend.
 
 ## Abstract
-The increasing use of Deep Neural Networks (DNNs) in safety- and security-critical applications created an urgent need for effective 
-DNN testing techniques capable of establishing the dependability levels of DNNs.
-Despite noteworthy advances, recent research proposes testing techniques and coverage criteria that focus primarily on the analysis of the DNN 
-behaviour using the conventional training-validation-testing DNN practice, often neglecting important generalisation capabilities exhibited by DNNs. 
-We address this gap by introducing DEEPKNOWLEDGE, a systematic testing methodology for DNNs founded on the principle of knowledge transfer. 
-Our empirical evaluation of several DNNs, across multiple datasets and state-of-the-art adversarial generation techniques demonstrates 
-the usefulness and effectiveness of DEEPKNOWLEDGE and its ability to support the engineering of more dependable DNNs.
-DEEPKNOWLEDGE provides to our partners an easy and effective assurance technique for their Machine Learning componenets.
-our tool in a simple multi-paradigm technology, i.e., using a set of Python scripts. 
-This enables a quick adaptation and code maintenance by our partners. 
-The developed prototype tool is also compatible with most systems and architectures used by our industrial partners in SESAME.
+Despite their unprecedented success, DNNs are notoriously fragile to small shifts in data distribution, 
+demanding effective testing techniques capable of providing evidence for DNN dependable operation.
+Despite recent advances in devising techniques for the systematic testing of DNN-based systems, there is a lack of holistic testing and quality assurance methodologies that assess DNN's capability to generalize and operate comparably beyond data included in their training distribution. 
+We address this gap by introducing \approach, a systematic testing methodology for DNN-based systems founded on the theory of knowledge generalisation, which aims to enhance DNN robustness and reduce the %unreasonable 
+residual risk of `black box' models. 
+Conforming to this theory, \approach\ posits that core computational DNN units have the capacity to generalise under domain shift. \approach\ provides an objective confidence measurement on testing activities of DNN in any data distribution. Our empirical evaluation of several DNNs, across multiple datasets and state-of-the-art adversarial generation techniques demonstrates the usefulness and effectiveness of \approach\ and its ability to support the engineering of more dependable DNNs.
+We report improvements of up to 10 percentage points over state-of-the-art coverage criteria for detecting adversarial attacks on several benchmarks, including MNIST, SVHN, and CIFAR.
 
 ## Install Required Packages
-We recommend to start by creating a virtual environement then install the required packages.
+We recommend starting by creating a virtual environment and then installing the required packages.
 
 #### Vitual Environement
 
