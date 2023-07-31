@@ -42,9 +42,7 @@ def get_adv(attack, dataset, X_test, Y_test):
     adv_image_all.append(np.load('dataset/adv_image/{}_{}_image.npy'.format(attack, dataset)))
 
     adv_image_all = np.concatenate(adv_image_all, axis=0)
-    # print("adv_image_all ", adv_image_all.shape[0])
-
-    # print("ADVvvvvvv")
+    
 
     # adv_size = max(adv_image_all.shape[0], 3000)
 
@@ -57,11 +55,7 @@ def get_stat(preferred_neurons,type):
     minvalpref = preferred_neurons[min(preferred_neurons, key=preferred_neurons.get)]
     median_H_D = np.median(list(preferred_neurons.values()))
     # median_l = statistics.median(list(preferred_neurons.values()))
-    # print(type," stats \n")
-    # print(maxvalpref)
-    # print(minvalpref)
-    # print(median_H_D)
-    # print(median_l)
+   
 
     return 0
 def save_KnwTrNeurons(neurons, filename):
@@ -137,7 +131,7 @@ class KnowledgeCoverage:
         outs = get_layer_outs_new(self.model, test_inputs, self.skip_layers)
 
         # for index, layer in enumerate(self.model.layers):
-        #     print("!!!!!!!!!", layer.name)
+        #    
         #     print(index)
         filter_count_by_layer = {}
         layer_count = len(outs)
@@ -227,14 +221,14 @@ class KnowledgeCoverage:
             max_comb = 0
 
         elif method == 'idc':
-            print("total top N", len(topN))
+           
             topN = topN[: int(len(topN) * self.percentage)]
             # print("the top N")
             # print(topN)
 
             nbr=min(self.user_input, len(topN))
             # topN = topN[: nbr]
-            print("nbre of neurons",len(topN))
+      
             coverage, covered_combinations, max_comb = self.idc_pipline(self.model_name, train_inputs,
                                                                         self.subject_layer, test_inputs,
                                                                         self.selected_class, topN, subsetTop)
@@ -296,7 +290,7 @@ class KnowledgeCoverage:
 
         save_KnwTrNeurons(scaled_hellinger, '%s/%s_'
                           % (experiment_folder, self.data_set) + 'HDALL')
-        # print("THE SCALED HD SAVED !!!!!!!!!!!!!")
+        
 
 
         # save_KnwTrNeurons(hellinger_dict, '%s/%s_'
@@ -542,7 +536,7 @@ class KnowledgeCoverage:
 
             X_test = X_test_a
 
-        print("test data !!!!!!",X_test.shape)
+        
         nc_test = self.KnwTransfer(X_test, "testing")
         test_data = pd.read_pickle(
             "data/testing_{}_layers.sav".format(self.data_set))  # , sep='\t',error_bad_lines=False
