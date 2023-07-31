@@ -23,6 +23,27 @@ from Networks.dave_model import Dave_orig
 
 random.seed(123)
 np.random.seed(123)
+def get_non_con_neurons(neurons):
+    result = []
+    for t in neurons:
+        # for x in t[1]:
+        ####
+            result.append(t[1])
+    return result
+def get_conv(subject_layer, model, train_layer_outs):
+    layers_indices = list(range(len(train_layer_outs)))
+
+    if subject_layer == layers_indices[-1]:
+        is_conv = False
+    else:
+        # name = model.layers[subject_layer + 1].name
+        name = model.layers[subject_layer].name
+        # print("name layer", name)
+        if 'conv' in model.layers[subject_layer].name:
+            is_conv = True
+        else:
+            is_conv = False
+    return is_conv
 
 def get_layer_inputs(model, test_input, skip=None, outs=None):
     if skip is None:
@@ -201,8 +222,9 @@ def get_layer_outs_new(model, inputs, skip=[]):
     # It is a shortcut.
     # skip.append(0)
     evaluater = models.Model(inputs=model.input,
-                             outputs=[layer.output for index, layer in enumerate(model.layers) \
-                                      if index not in skip])
+                             outputs=[layer.output for index, layer in enumerate(model.layers)])
+    # \
+    #                                   if index not in skip])
 
     # Insert some dummy value in the beginning to avoid messing with layer index
     # arrangements in the main flow
@@ -211,7 +233,7 @@ def get_layer_outs_new(model, inputs, skip=[]):
 
     # return outs
 
-    return evaluater.predict(inputs)
+    return evaluater.predict(np.array(inputs))
 
 
 def calc_major_func_regions(model, train_inputs, skip=None):
