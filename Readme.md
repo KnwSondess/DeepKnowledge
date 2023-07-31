@@ -44,7 +44,6 @@ pip install numpy==1.21.5
 pip install keras==2.8.0 
 pip install protobuf==3.20.1
 
-pip install numpy==1.21.5
 pip install pandas==1.3.5
 pip install sklearn
 
