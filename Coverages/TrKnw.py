@@ -12,7 +12,7 @@ pd.options.mode.chained_assignment = None
 import os
 import pickle
 from collections import defaultdict
-from Coverages.idc_knwWorks import *
+from Coverages.idc_knwW import *
 # from Coverages.idc import *
 from sklearn import externals
     # .joblib as extjoblib
