@@ -12,7 +12,7 @@ pd.options.mode.chained_assignment = None
 import os
 import pickle
 from collections import defaultdict
-from Coverages.idc_knwW import *
+from Coverages.idc_knwWorks import *
 # from Coverages.idc import *
 from sklearn import externals
     # .joblib as extjoblib
@@ -436,9 +436,9 @@ class KnowledgeCoverage:
 
         if self.data_set == 'mnist':
             if statep == 'zero_shot':
-                # X_train, y_train, X_test, y_test, X_val, y_val = load_MNISTVAL("fashion", channel_first=False) #==> initial study
+                X_train, y_train, X_test, y_test, X_val, y_val = load_MNISTVAL("fashion", channel_first=False) #==> initial study
                 # X_train, y_train, X_test, y_test, X_val, y_val
-                X_train, y_train, X_test, y_test, X_val, y_val = load_MNISTVAL("fashion", channel_first=False)
+                # X_train, y_train, X_test, y_test, X_val, y_val = load_MNISTVAL("emnist", channel_first=False)
             else:
                 X_train, y_train, X_test, y_test, X_val, y_val = load_MNISTVAL("ini", channel_first=False)
             img_rows, img_cols = 28, 28
@@ -460,9 +460,9 @@ class KnowledgeCoverage:
 
         elif self.data_set == 'svhn':
             if statep == 'zero_shot':
-                X_train, y_train, X_test, y_test, X_val, y_val = load_MNIST_32()#==>initial emnist
+                X_train1, y_train1, X_test, y_test, X_val1, y_val1 = load_MNIST_32()#==>initial emnist
                 # X_train, y_train, X_test, y_test, X_val, y_val \
-                # X_train, X_val, y_train, y_val= load_GTSRB()
+                X_train, X_val, y_train, y_val= load_GTSRB()
             else:
                 X_train, y_train, X_test, y_test, X_val, y_val = load_SVHN_("ini")
 
