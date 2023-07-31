@@ -41,7 +41,7 @@ To install the required packages
 pip install -r DeepKnw_requirements.txt
 
 ```
-## Linux
+## Dataset
 To download SVHN dataset
 ```
 cd dataset/SVHN
