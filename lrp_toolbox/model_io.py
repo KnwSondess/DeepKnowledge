@@ -10,12 +10,14 @@
 
 import os
 import pickle
+from modules import Sequential,Linear,Tanh,Rect,SoftMax,Convolution,Flatten,SumPool,MaxPool
+import numpy
 import numpy as np
-from .modules import Sequential,Linear,Tanh,Rect,SoftMax,Convolution,Flatten,SumPool,MaxPool
-#Team DeepFault
-from keras.models import model_from_json, load_model
-from keras.layers import Input
-import json
+import importlib.util as imp
+if imp.find_spec("cupy"):
+    import cupy
+    import cupy as np
+na = np.newaxis
 
 #--------------------
 #   model reading
@@ -90,12 +92,15 @@ def read(path, fmt = None):
     if fmt is None: #try to infer format
         fmt = os.path.splitext(path)[1].replace('.','').lower()
 
-    return _read_as[fmt](path)
+    model = _read_as[fmt](path)
+    if imp.find_spec("cupy"):
+        model.to_cupy()
+    return model
 
 
 def _read_pickled(path):
     print('loading pickled model from',path)
-    with open(path,'r') as f:
+    with open(path,'rb') as f:
         p = pickle.load(f, encoding='latin1')
     return p
 
@@ -138,19 +143,9 @@ def _read_txt(path):
                     h = int(h); w = int(w); d = int(d); n = int(n); s0 = int(s0); s1 = int(s1)
                     layer = Convolution(filtersize=(h,w,d,n), stride=(s0,s1))
                     layer.W = np.array([float(weightstring) for weightstring in content[c+1].split() if len(weightstring) > 0]).reshape((h,w,d,n))
-                    ####NO change
-                    # layer.B = np.array([float(weightstring) for weightstring in content[c+2].split() if len(weightstring) > 0])
-                    # modules.append(layer)
-                    # c+=3 #the description of a convolution layer spans three lines
-                    ###Change to account for conv layers with no biais
-                    try:
-                        layer.B = np.array([float(weightstring) for weightstring in content[c+2].split() if len(weightstring) > 0])
-                        modules.append(layer)
-                        c += 3  # the description of a convolution layer spans three lines
-                    except:
-                        layer.B = np.zeros((n))
-                        c += 2
-                        modules.append(layer)
+                    layer.B = np.array([float(weightstring) for weightstring in content[c+2].split() if len(weightstring) > 0])
+                    modules.append(layer)
+                    c+=3 #the description of a convolution layer spans three lines
 
                 elif line.startswith(SumPool.__name__): # @UndefinedVariable import error suppression for PyDev users
                     '''
@@ -178,7 +173,6 @@ def _read_txt(path):
 
                 elif line.startswith(Flatten.__name__): # @UndefinedVariable import error suppression for PyDev users
                     modules.append(Flatten()) ; c+=1 #one line of parameterless layer description
-                    print('flatten OK')
                 elif line.startswith(Rect.__name__): # @UndefinedVariable import error suppression for PyDev users
                     modules.append(Rect()) ; c+= 1 #one line of parameterless layer description
                 elif line.startswith(Tanh.__name__): # @UndefinedVariable import error suppression for PyDev users
@@ -203,7 +197,7 @@ def _read_txt(path):
         #numpy.reshape may throw ValueErros if reshaping does not work out.
         #In this case: fall back to reading the old plain text format.
         print('probable reshaping/formatting error while reading plain text network file.')
-        print('ValueError message:', e.message)
+        print('ValueError message: {}'.format(e))
         print('Attempting fall-back to legacy plain text format interpretation...')
         return _read_txt_old(path)
         print('fall-back successfull!')
@@ -241,7 +235,7 @@ def _read_txt_old(path):
             else:
                 raise ValueError('Layer type ' + [s for s in line.split() if len(s) > 0][0] +  ' not supported by legacy plain text format.')
 
-            c+=1;
+            c+=1
             line = content[c]
 
         return Sequential(modules)
@@ -261,7 +255,7 @@ _read_as = {'pickled': _read_pickled,\
 #   model writing
 #--------------------
 
-def write(model, path, num_channels = None, fmt = None):
+def write(model, path, fmt = None):
     '''
     Write neural a network model to a given path. Supported are either plain text or via python's pickle module.
     The model is cleaned of any temporary variables , e.g. hidden layer inputs or outputs, prior to writing
@@ -285,28 +279,29 @@ def write(model, path, num_channels = None, fmt = None):
         see the Notes - Section in the function documentation of model_io.read() for general info and a format
         specification of the plain text representation of neural network models
     '''
-    if not fmt == 'keras_txt':
-        model.clean()
 
+    model.clean()
+    if not np == numpy: #np = cupy
+        model.to_numpy() #TODO reconvert after writing?
     if fmt is None:
         fmt = os.path.splitext(path)[1].replace('.','').lower()
 
-    _write_as[fmt](model, path, num_channels)
+    _write_as[fmt](model, path)
 
 
-def _write_pickled(model, path, num_channels=None):
+def _write_pickled(model, path):
     print('writing model pickled to',path)
     with open(path, 'wb') as f:
         pickle.dump(model,f,pickle.HIGHEST_PROTOCOL)
 
 
-def _write_txt(model,path, num_channels=None):
+def _write_txt(model,path):
     print('writing model as plain text to',path)
 
     if not isinstance(model, Sequential):
         raise Exception('Argument "model" must be an instance of module.Sequential, wrapping a sequence of neural network computation layers, but is {0}'.format(type(model)))
 
-    with open(path, 'wb') as f:
+    with open(path, 'w') as f:
         for layer in model.modules:
             if isinstance(layer,Linear):
                 '''
@@ -374,103 +369,11 @@ def _write_txt(model,path, num_channels=None):
                 f.write(layer.__class__.__name__ + '\n')
 
 
-def _write_keras_txt(source_path, destination_path, num_channels):
-
-    '''
-    Source path should include architecture (e.g. .json) and weights (e.g. .h5)
-    files.
-    '''
-
-    print('writing keras model as plain text to', destination_path)
-
-    model_name = source_path.split('/')[-1]
-
-    from utils_ini import load_dave_model
-    if 'dave' in source_path.lower():
-        model = load_dave_model()
-        model_json = model.to_json()
-        json_obj = json.loads(model_json)
-    else:
-        try:
-            json_file = open(source_path + '.json', 'r')
-            file_content = json_file.read()
-            json_file.close()
-
-            model = model_from_json(file_content)
-            model.load_weights(source_path + '.h5')
-
-            json_obj = json.loads(file_content)
-
-        except:
-            print("exception model source")
-            model = load_model(source_path + '.hdf5')
-            model_json = model.to_json()
-            json_obj = json.loads(model_json)
-
-
-    txtfile = open(source_path + '.txt', 'w')
-
-    prev_layer = None
-    #TODO: SHOULD BE AUTOMATICALLY DETERMINED
-    prev_filter_num = str(num_channels) #WARNING: THIS SHOULD BE 3 FOR THE CIFAR-10 DATASET
-    for layer, json_elem in zip(model.layers, json_obj['config']['layers']):
-        if json_elem['class_name'] == 'Activation':
-            if json_elem['config']['activation'] == 'softmax':
-                continue
-                #txtfile.write('Softmax')
-            elif json_elem['config']['activation'] == 'relu':
-                txtfile.write('Rect')
-        elif json_elem['class_name'] == 'Dense':
-            txtfile.write('Linear ' + str(prev_layer.output_shape[-1]) + ' ' \
-                + str(layer.output_shape[-1]))
-        elif json_elem['class_name'] == 'Conv2D':
-            txtfile.write('Convolution ' + str(json_elem['config']['kernel_size'][0])\
-                + ' ' + str(json_elem['config']['kernel_size'][1]) + ' ' \
-                + prev_filter_num + ' ' + str(json_elem['config']['filters']) + ' '\
-                + str(json_elem['config']['strides'][0]) + ' ' \
-                + str(json_elem['config']['strides'][1]))
-        elif json_elem['class_name'] == 'MaxPooling2D':
-            print(layer.output_shape)
-            txtfile.write('MaxPool ' +  str(json_elem['config']['pool_size'][0]) + ' '\
-                + str(json_elem['config']['pool_size'][1]) + ' ' \
-                + str(json_elem['config']['strides'][0]) + ' ' \
-                + str(json_elem['config']['strides'][1]))
-        elif json_elem['class_name'] == 'Flatten':
-            txtfile.write(json_elem['class_name'])
-        else:
-            print("Unknown layer: " + str(json_elem['class_name']))
-            continue
-
-        txtfile.write('\n')
-
-        try:
-            for elem in layer.get_weights()[0].flatten():
-                txtfile.write(str(elem) + ' ')
-            txtfile.write('\n')
-            for elem in layer.get_weights()[1].flatten():
-                txtfile.write(str(elem) + ' ')
-            txtfile.write('\n')
-        except:
-            pass
-
-        if json_elem['class_name'] == 'Dense' and \
-                    json_elem['config']['activation'] == 'relu':
-            txtfile.write('Rect')
-            txtfile.write('\n')
-
-        prev_layer = layer
-        if json_elem['class_name'] == 'Conv2D':
-            prev_filter_num = str(json_elem['config']['filters'])
-
-    txtfile.close()
-
-
-
 _write_as = {'pickled': _write_pickled,\
             'pickle':_write_pickled,\
             'nn':_write_pickled,\
             '':_write_pickled,\
             'txt':_write_txt,\
-            'keras_txt': _write_keras_txt,\
             }
+
 
