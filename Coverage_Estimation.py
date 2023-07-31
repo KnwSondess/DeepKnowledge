@@ -4,7 +4,8 @@ from tensorflow import keras
 
 from datetime import datetime
 from tensorflow.keras.models import model_from_json, load_model, save_model
-from Coverages.knw import *
+# from Coverages.knw import *
+from Coverages.TrKnw import *
 from tensorflow.keras import applications
 from tensorflow.python.client import device_lib
 
@@ -104,6 +105,11 @@ def generate_coverage(approach,modelpath,dataset,TypeTrknw, percent,selected_cla
     if approach == 'knw':
         model_folder = 'Networks'
         method = 'idc'
+        if not os.path.exists("./data"):
+            os.makedirs("./data")
+        if not os.path.exists("./experiments"):
+            os.makedirs("./experiments")
+      
 
         knw = KnowledgeCoverage(model, dataset, model_name, subject_layer, trainable_layers,dense_layers, method, percent, threshold,attack, skip_layers, nbr_Trknw,selected_class=1)
 
@@ -159,10 +165,4 @@ if __name__ == "__main__":
         endTime = time.time()
         elapsedTime = endTime - startTime
         print("Elapsed Time = %s" % elapsedTime)
-
-
-
-
-
-
 
