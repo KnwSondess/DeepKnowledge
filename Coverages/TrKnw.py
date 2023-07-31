@@ -22,7 +22,7 @@ from Dataprocessing import load_MNISTVAL, load_CIFARVAL, load_driving_data, load
     # , load_cifar_vgg, load_coco, load_coco_augmented
 from hellinger_distance import *
 
-from lrp_toolbox.model_io import write, read
+# from lrp_toolbox.model_io import write, read
 
 
 def scaleHD(points, val, rmax=1, rmin=0):
