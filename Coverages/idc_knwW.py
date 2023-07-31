@@ -302,8 +302,8 @@ def measure_idc(model, model_name, test_inputs,relevant_neurons, subsetTop,sel_c
 
     for layer,neurons in relevant.items():
         subject_layer = layer
-        print("layer",subject_layer)
-        print("neurons", neurons)
+        # print("layer",subject_layer)
+        # print("neurons", neurons)
 
 
         is_conv = get_conv(subject_layer, model, train_layer_outs)
