@@ -4,7 +4,7 @@ from sklearn import cluster
 from utils_ini import save_quantization, load_quantization, save_totalR, load_totalR
 from utils_ini  import save_layerwise_relevances, load_layerwise_relevances
 from utils_ini  import get_layer_outs_new, create_dir, get_non_con_neurons
-from lrp_toolbox.model_io import write, read
+# from lrp_toolbox.model_io import write, read
 from utils_ini import get_conv
 from sklearn.metrics import silhouette_score
 
