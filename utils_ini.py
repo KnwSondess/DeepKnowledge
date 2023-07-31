@@ -18,7 +18,7 @@ from tensorflow.keras.models import model_from_json
 from tensorflow.keras.layers import Input
 from tensorflow.keras import utils
 from tensorflow.keras import models
-from lrp_toolbox.model_io import read
+# from lrp_toolbox.model_io import read
 from Networks.dave_model import Dave_orig
 
 random.seed(123)
