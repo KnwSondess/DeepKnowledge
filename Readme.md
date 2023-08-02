@@ -57,14 +57,20 @@ sudo bash download.sh
 ```
 
 ## Runing DEEPKNOWLEDGE
-use shell command
+use shell commands depending on your Python version
 
 ```
 $ cd path/to/the/project/folder
 
-$ python Coverage_Estimation.py –model [path_to_keras_model_file] –dataset svhn –approach knw –
-threshold 0.5 –logfile [path_to_log_file]
+$ python Coverage_Estimation.py 
 ```
+or
+```
+$ cd path/to/the/project/folder
+
+$ python3.8 Coverage_Estimation.py 
+```
+
 ## Parameters for configuring 
 ```
 - model => The name of the Keras model file. Note the architecture file (i.e., JSON) and the weights
