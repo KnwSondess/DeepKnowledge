@@ -16,7 +16,7 @@ We address this gap by introducing \approach, a systematic testing methodology f
 residual risk of `black box' models. 
 Conforming to this theory, \approach\ posits that core computational DNN units have the capacity to generalise under domain shift. \approach\ provides an objective confidence measurement on testing activities of DNN in any data distribution. Our empirical evaluation of several DNNs, across multiple datasets and state-of-the-art adversarial generation techniques demonstrates the usefulness and effectiveness of \approach\ and its ability to support the engineering of more dependable DNNs.
 We report improvements of up to 10 percentage points over state-of-the-art coverage criteria for detecting adversarial attacks on several benchmarks, including MNIST, SVHN, and CIFAR.
-## This implementation incorporates different adequacy coverage metrics, which serve as baselines for our Test Adequacy criterion.
+### This implementation incorporates different adequacy coverage metrics, which serve as baselines for our Test Adequacy criterion.
 More details about references can be found in the Related Work and Experiments sections of the DEEPKNOWLEDGE paper.
 
 ## Install Required Packages
