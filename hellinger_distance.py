@@ -5,6 +5,10 @@ Description :  Calculates the hellinger distance for a particular neuron between
                neuron.
 Python version : 3.7.3
 author Vageesh Saxena
+
+# Code based on TX-Ray code release
+# @ https://github.com/copenlu/tx-ray
+
 """
 ########################################################################################################################
 
