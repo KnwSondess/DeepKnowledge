@@ -1,3 +1,8 @@
+"""
+# Code based on DeepImportance code release
+# @ https://github.com/DeepImportance/deepimportance_code_release
+"""
+
 import numpy as np
 from sklearn import cluster
 # from Coverages.Clustering import *
@@ -298,18 +303,22 @@ def measure_idc(model, model_name, test_inputs,relevant_neurons, subsetTop,sel_c
         else:
             relevant[x[0]] = [x[1]]
     # print("all neurons per layers", relevant)
-    total_max_comb=1
+    total_max_comb=0
 
     for layer,neurons in relevant.items():
         subject_layer = layer
-        # print("layer",subject_layer)
-        # print("neurons", neurons)
+        print("layer",subject_layer)
+        print("neurons", neurons)
 
 
         is_conv = get_conv(subject_layer, model, train_layer_outs)
 
         qtizedlayer=quantizeSilhouette(train_layer_outs[subject_layer], is_conv,
                               neurons)#train_layer_outs[subject_layer]
+        print("combinations by neurons")
+        print(len(qtizedlayer))
+
+
 
         for test_idx in range(len(test_inputs)):
             if is_conv :
@@ -319,25 +328,35 @@ def measure_idc(model, model_name, test_inputs,relevant_neurons, subsetTop,sel_c
 
             else:
                     lout = []
-                    # neuronsind=list(zip(*neurons))
+
                     neuronsindices=get_non_con_neurons(neurons)
-                    # print(neuronsindices)
+
                     for i in neuronsindices:
                         lout.append(test_layer_outs[subject_layer][test_idx][i])
 
 
             comb_to_add = determine_quantized_cover(lout, qtizedlayer)
+
+            # print("comb_to_add",comb_to_add)
             if comb_to_add not in covered_combinations:
                     covered_combinations += (comb_to_add,)
 
         max_comb = 1  # q_granularity**len(relevant_neurons)
 
+        # print(qtizedlayer)
         for q in qtizedlayer:
+                print("length:", len(q))
+                print(q)
 
-                max_comb *= len(q)
-                # print("first_total", total_max_comb)
+                # comb = 2**len(q)
+                # max_comb+=comb
+                max_comb *=len(q)
+                print("max_comb",max_comb)
 
-                total_max_comb+=max_comb
+
+
+        total_max_comb+=max_comb
+        print("total_max_comb", total_max_comb)
 
     print("total_max_comb",total_max_comb)
 
