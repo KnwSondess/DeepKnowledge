@@ -393,6 +393,7 @@ def load_GTSRB():
                42: 'End no passing veh > 3.5 tons'}
 
     train_number = []
+    test_number = []
     class_num = []
 
     for folder in folders:
