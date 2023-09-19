@@ -22,7 +22,7 @@ More details about references can be found in the Related Work and Experiments s
 ## Install Required Packages
 We recommend starting by creating a virtual environment and then installing the required packages.
 
-#### Vitual Environement
+#### Virtual Environment
 
 ```
 python3 -m pip install --user virtualenv
